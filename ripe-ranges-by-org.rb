@@ -11,7 +11,7 @@ end
 
 ripe_org=ARGV[0] # ORG-HAA1-RIPE
 
-uri = URI("http://rest.db.ripe.net/search?inverse-attribute=org&type-filter=inetnum&source=ripe&query-string=#{ripe_org}")
+uri = URI("http://rest.db.ripe.net/search?inverse-attribute=org&type-filter=inetnum&type-filter=inet6num&source=ripe&query-string=#{ripe_org}")
 
 Net::HTTP.start('rest.db.ripe.net', 80) do |http|
   request = Net::HTTP::Get.new(uri)
@@ -32,6 +32,8 @@ Net::HTTP.start('rest.db.ripe.net', 80) do |http|
      ip_range = NetAddr.range(first_ip, last_ip, :Inclusive => true, :Objectify => true)
 
      puts NetAddr.merge(ip_range, :Objectify => true)
+    elsif object['type'] == 'inet6num'
+      puts object['primary-key']['attribute'][0]['value']
     end
   end
   
